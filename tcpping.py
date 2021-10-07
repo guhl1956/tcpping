@@ -37,11 +37,11 @@ count = 0
 # Optional ping count.  Currently defaults to 10. Maximum of 10000 allowed.
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--d', type=str, required=True)
-parser.add_argument('--s', type=str)
-parser.add_argument('--v', type=int)
-parser.add_argument('--p', type=int)
-parser.add_argument('--c', type=int)
+parser.add_argument('--d', metavar='Destination', type=str, required=True, help='required TCP ping target destintion')
+parser.add_argument('--s', metavar='[Source address]', type=str, help='optional source IPv4 or IPv6 address')
+parser.add_argument('--v', metavar='[Protocol version 4|6]', type=int, help='optional protocol, specify 4 or IPv4 or 6 for IPv6')
+parser.add_argument('--p', metavar='[TCP Port]', type=int, help='optional destination TCP port, defaullts to TCP/80')
+parser.add_argument('--c', metavar='[Ping count]', type=int, help='number of TCP pings to send, defaults to 10, maximum of 10000')
 args = parser.parse_args()
 
 host = args.d

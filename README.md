@@ -19,15 +19,16 @@ Usage: ./tcpping.py --d host [--s source] [--v IP version] [--p port] [--c count
 
 ## Example
 ```
-./tcpping.py --d 172.28.9.44 --s 172.28.9.40 --c 5 --v 4 --p 443
-Connected to 172.28.9.44 (172.28.9.44) [443]: tcp_seq=0 time=4.48 ms
-Connected to 172.28.9.44 (172.28.9.44) [443]: tcp_seq=1 time=0.38 ms
-Connected to 172.28.9.44 (172.28.9.44) [443]: tcp_seq=2 time=0.40 ms
-Connected to 172.28.9.44 (172.28.9.44) [443]: tcp_seq=3 time=0.39 ms
-Connected to 172.28.9.44 (172.28.9.44) [443]: tcp_seq=4 time=0.43 ms
+$ ./tcpping.py --d www.google.com --v 4 --p 443 --c 5
+Connected to www.google.com (142.250.73.228) [443]: tcp_seq=0 time=26.12 ms
+Connected to www.google.com (142.250.73.228) [443]: tcp_seq=1 time=21.40 ms
+Connected to www.google.com (142.250.73.228) [443]: tcp_seq=2 time=27.60 ms
+Connected to www.google.com (142.250.73.228) [443]: tcp_seq=3 time=44.68 ms
+Connected to www.google.com (142.250.73.228) [443]: tcp_seq=4 time=20.33 ms
 
 TCP Ping Results: Connections (Total/Pass/Fail): [5/5/0] (Failed: 0%)
-rtt min/avg/med/max/mdev = 0.380/1.216/0.400/4.480/1.825 ms```
+rtt min/avg/med/max/mdev = 20.330/28.026/26.120/44.680/9.802 ms
+
 
 ## Contributors
 * Jonathan Yantis ([yantisj](https://github.com/yantisj))
