@@ -9,15 +9,13 @@ import socket
 import time
 import signal
 import argparse
-from statistics import mean,median,stdev
+from statistics import mean,stdev
 from timeit import default_timer as timer
 
 host = None
 source = None
 port = 80
 version = 4
-min_time = 99999.9
-max_time = 0.0
 avg_time = 0.0
 sum_time = 0.0
 rtt_set = set()
@@ -44,11 +42,21 @@ parser.add_argument('--p', metavar='[TCP Port]', type=int, help='optional destin
 parser.add_argument('--c', metavar='[Ping count]', type=int, help='number of TCP pings to send, defaults to 10, maximum of 10000')
 args = parser.parse_args()
 
+# Ping target
 host = args.d
+
+family = socket.AF_INET
+
 if args.s:
-	source = args.s
+    source = args.s
 if args.v:
-	version = args.v
+    version = args.v
+    if version == 6:
+       family = socket.AF_INET6
+    elif version != 4:
+       print("IP protocol id must be 4 or 6")
+       exit()
+
 if args.p:
 	port = args.p
 if args.c:
@@ -62,6 +70,8 @@ if args.c:
 passed = 0
 failed = 0
 
+# resolve IPv4 or IPv6 address from host
+addr = socket.getaddrinfo(host, None, family)[0][4][0]
 
 def getResults(rset):
     """ Summarize Results """
@@ -78,7 +88,7 @@ def getResults(rset):
     if failed != count:
 
         # Print RTT Minimun/Mean/Median/StdDev across all the RTTs collected during the run
-        print("rtt min/avg/med/max/mdev = {:.3f}".format(min(rset)),"/{:.3f}".format(mean(rset)),"/{:.3f}".format(median(rset)),"/{:.3f}".format(max(rset)),"/{:.3f}".format(stdev(rset))," ms", sep='')
+        print("rtt min/avg/max/mdev = {:.3f}".format(min(rset)),"/{:.3f}".format(mean(rset)),"/{:.3f}".format(max(rset)),"/{:.3f}".format(stdev(rset))," ms", sep='')
 
 
 def signal_handler(signal, frame):
@@ -102,14 +112,8 @@ while count < myCount:
     # New  IPv4 or IPv5 Socket
     if version == 4:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        family = socket.AF_INET
     elif version == 6:
         s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
-        family = socket.AF_INET6
-    else:
-        print("IP protocol id must be 4 or 6")
-        failed += 1
-        exit()
 
     # 1sec Timeout
     s.settimeout(1)
@@ -124,9 +128,8 @@ while count < myCount:
             s.bind((source, 0)) 
 
         # Connect to remote host on specified port
-        s.connect((host, int(port)))
+        s.connect((addr, int(port)))
         s.shutdown(socket.SHUT_RD)
-        addr = socket.getaddrinfo(host, None, family)[0][4][0]
         success = True
     
     # Connection Timed Out
